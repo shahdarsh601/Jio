@@ -19,5 +19,7 @@ This project contains a Flask API that detects singular and plural nouns in a gi
 - Make a POST request to the `/detect` endpoint with a JSON payload containing the sentence (could be of your choice):
   
     {
+  
         "sentence": "The cats are running in the gardens."
+  
     }
