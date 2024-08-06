@@ -17,8 +17,7 @@ app = Flask(__name__)
 model = joblib.load('sentiment_model.pkl')
 vectorizer = joblib.load('vectorizer.pkl')
 
-
-# Preprocessing function (same as in TrainModel.py)
+# Preprocessing function
 def preprocess_text(text):
     stop_words = set(stopwords.words('english'))
     lemmatizer = WordNetLemmatizer()
@@ -26,7 +25,6 @@ def preprocess_text(text):
     words = word_tokenize(text.lower())
     words = [lemmatizer.lemmatize(word) for word in words if word.isalpha() and word not in stop_words]
     return ' '.join(words)
-
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -41,7 +39,6 @@ def predict():
 
     sentiments = {0: 'Negative', 1: 'Positive', 2: 'Neutral'}
     return jsonify({"sentiment": sentiments[prediction[0]]})
-
 
 if __name__ == "__main__":
     app.run(debug=True)
