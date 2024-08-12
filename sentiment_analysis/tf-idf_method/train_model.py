@@ -17,8 +17,10 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-# Load the dataset
-df = pd.read_csv('IMDB Dataset.csv')
+
+# Loadign the dataset..
+df = pd.read_csv('IMDB Dataset.csv', encoding='ISO-8859-1')
+
 
 # Preprocessing function
 def preprocess_text(text):
@@ -29,27 +31,27 @@ def preprocess_text(text):
     words = [lemmatizer.lemmatize(word) for word in words if word.isalpha() and word not in stop_words]
     return ' '.join(words)
 
-# Apply preprocessing
+# Applying preprocessing
 df['review'] = df['review'].apply(preprocess_text)
 
 # Label encoding
 df['sentiment'] = df['sentiment'].map({'negative': 0, 'positive': 1, 'neutral': 2})
 
-# Separate each class for balancing
+# Separating each class for balancing
 negative = df[df['sentiment'] == 0]
 positive = df[df['sentiment'] == 1]
 neutral = df[df['sentiment'] == 2]
 
-# Resample to balance the classes
+# Resampling to balance the classes
 neutral_upsampled = resample(neutral,
                              replace=True,  # sample with replacement
                              n_samples=len(negative),  # match number in majority class
                              random_state=42)  # reproducible results
 
-# Combine majority class with upsampled minority class
+# Combining majority class with upsampled minority class
 df_balanced = pd.concat([negative, positive, neutral_upsampled])
 
-# Split the data
+# Splitting the data
 X_train, X_test, y_train, y_test = train_test_split(df_balanced['review'], df_balanced['sentiment'], test_size=0.2, random_state=42)
 
 # Vectorization
@@ -61,11 +63,11 @@ X_test_vectorized = vectorizer.transform(X_test)
 model = LogisticRegression(multi_class='ovr', solver='liblinear')
 model.fit(X_train_vectorized, y_train)
 
-# Save the model and vectorizer
+# Saving the model and vectorizer
 joblib.dump(model, 'sentiment_model.pkl')
 joblib.dump(vectorizer, 'vectorizer.pkl')
 
-# Evaluate the model
+# accuracy score
 y_pred = model.predict(X_test_vectorized)
 
 # Print the classification report and accuracy score
